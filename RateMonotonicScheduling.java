@@ -6,7 +6,6 @@ import org.eclipse.app4mc.amalthea.model.Amalthea;
 import org.eclipse.app4mc.amalthea.model.HwModule;
 import org.eclipse.app4mc.amalthea.model.HwStructure;
 import org.eclipse.app4mc.amalthea.model.ProcessingUnit;
-import org.eclipse.app4mc.amalthea.model.SchedulerAllocation;
 import org.eclipse.app4mc.amalthea.model.Task;
 import org.eclipse.app4mc.amalthea.model.Time;
 import org.eclipse.app4mc.amalthea.model.io.AmaltheaLoader;
@@ -24,16 +23,6 @@ import org.eclipse.emf.common.util.EList;
 
 public class RateMonotonicScheduling {
 	static EList<ProcessingUnit> pUnit = new BasicEList<ProcessingUnit>();
-
-	public static EList<ProcessingUnit> getProcessingUnitsMapping(final Amalthea model) {
-		final EList<ProcessingUnit> pUnit = new BasicEList<ProcessingUnit>();
-		for (final SchedulerAllocation allocUnit : model.getMappingModel().getSchedulerAllocation()) {
-			for (final ProcessingUnit procUnit : allocUnit.getResponsibility()) {
-				pUnit.add(procUnit);
-			}
-		}
-		return pUnit;
-	}
 
 	public static EList<ProcessingUnit> getPuHwModel(final Amalthea model) {
 		for (final HwStructure struct : model.getHwModel().getStructures()) {
@@ -62,13 +51,9 @@ public class RateMonotonicScheduling {
 
 	}
 
-	public static EList<ProcessingUnit> getCoreList(final Amalthea model) {
-		return getPuHwModel(model);
-	}
-
 	public static void calcProcUtil(final TaskHandler th, final Amalthea model) {
 		double bounds;
-		for (final ProcessingUnit core : getCoreList(model)) {
+		for (final ProcessingUnit core : getPuHwModel(model)) {
 			double sum = 0.0;
 			final double size = th.getCoreAssignedTasks(core).size();
 			System.out.println("Processor Core \t: " + core.getDefinition().getName() + " " + core.getName());
